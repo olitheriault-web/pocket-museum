@@ -938,6 +938,16 @@ function MapAllFinds({ finds, onClose, onSelectFind, t }) {
 // ── Écran d'intro avec vidéo ──────────────────────────────────────────────────
 function SplashScreen({ onDone }) {
   const [phase, setPhase] = React.useState(0);
+  const lastTap = React.useRef(null);
+
+  const handleTap = () => {
+    const now = Date.now();
+    if (lastTap.current && now - lastTap.current < 350) {
+      onDone(); // double tap — skip !
+    }
+    lastTap.current = now;
+  };
+
   React.useEffect(() => {
     const t1 = setTimeout(() => setPhase(1), 1000);
     const t2 = setTimeout(() => setPhase(2), 2600);
@@ -952,7 +962,7 @@ function SplashScreen({ onDone }) {
   const R  = size / 2 - 8;
 
   return (
-    <div style={{
+    <div onClick={handleTap} onTouchEnd={handleTap} style={{
       position:"fixed", inset:0, zIndex:9999,
       background:"#06060A",
       display:"flex", flexDirection:"column",
