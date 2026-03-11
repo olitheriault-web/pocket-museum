@@ -1080,12 +1080,6 @@ function SplashScreen({ onDone }) {
               transition:"opacity 1.1s cubic-bezier(.4,0,.2,1), transform 1.1s cubic-bezier(.4,0,.2,1)",
               animation: phase>=3 ? "textReveal 1.3s cubic-bezier(.4,0,.2,1) forwards" : "none",
             }}>
-              <line x1={cx-R*0.50} y1={cx-R*0.37} x2={cx+R*0.50} y2={cx-R*0.37}
-                stroke="#C8A84B" strokeWidth="1" opacity="0.5"/>
-              <circle cx={cx-R*0.52} cy={cx-R*0.37} r={size*0.013} fill="#C8A84B" opacity="0.55"/>
-              <circle cx={cx+R*0.52} cy={cx-R*0.37} r={size*0.013} fill="#C8A84B" opacity="0.55"/>
-              <polygon points={`${cx},${cx-R*0.43} ${cx+size*0.011},${cx-R*0.37} ${cx},${cx-R*0.31} ${cx-size*0.011},${cx-R*0.37}`}
-                fill="#C8A84B" opacity="0.45"/>
               <text x={cx} y={cx-R*0.10} textAnchor="middle"
                 fontFamily="Georgia,serif" fontSize={size*0.118} letterSpacing={size*0.016}
                 fill="#E8D98A" style={{filter:"drop-shadow(0 0 16px #FFD700bb)"}}>
@@ -1104,12 +1098,7 @@ function SplashScreen({ onDone }) {
                 fill="#B8922A" opacity="0.72">
                 DÉTECTION DE MÉTAUX
               </text>
-              <polygon points={`${cx},${cx+R*0.54} ${cx+size*0.011},${cx+R*0.48} ${cx},${cx+R*0.42} ${cx-size*0.011},${cx+R*0.48}`}
-                fill="#C8A84B" opacity="0.45"/>
-              <line x1={cx-R*0.50} y1={cx+R*0.48} x2={cx+R*0.50} y2={cx+R*0.48}
-                stroke="#C8A84B" strokeWidth="1" opacity="0.5"/>
-              <circle cx={cx-R*0.52} cy={cx+R*0.48} r={size*0.013} fill="#C8A84B" opacity="0.55"/>
-              <circle cx={cx+R*0.52} cy={cx+R*0.48} r={size*0.013} fill="#C8A84B" opacity="0.55"/>
+
             </g>
           </g>
 
@@ -1358,6 +1347,35 @@ export default function App() {
 
   const [fbError, setFbError] = React.useState(false);
 
+  // ── Swipe pour revenir en arrière ──
+  const touchStartX = useRef(null);
+  const touchStartY = useRef(null);
+  useEffect(() => {
+    const onTouchStart = (e) => {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+    };
+    const onTouchEnd = (e) => {
+      if (touchStartX.current === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dy = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+      if (dx > 60 && dy < 80) {
+        if (view === "detail") { setView("folder"); setSelectedFind(null); }
+        else if (view === "folder") { setView("country"); }
+        else if (view === "country") { setView("home"); }
+        else if (view === "add") { setView("folder"); }
+      }
+      touchStartX.current = null;
+      touchStartY.current = null;
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [view]);
+
   useEffect(() => {
     const load = async () => {
       try {
@@ -1566,7 +1584,7 @@ export default function App() {
       }} />}
       {showMap && <MapPicker onSelect={addr => { setForm(p => ({ ...p, location: addr })); setShowMap(false); }} onClose={() => setShowMap(false)} t={t} />}
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
         <Header onMap={() => setShowMapAll(true)} onToggleLang={toggleLang} lang={lang} />
 
         {/* Stats */}
@@ -1657,7 +1675,7 @@ export default function App() {
     <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
         <Header backLabel={t.home} onBack={() => setView("home")} onToggleLang={toggleLang} lang={lang} />
 
         {/* Country banner */}
@@ -1739,7 +1757,7 @@ export default function App() {
     <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg /><Lightbox />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
         <Header backLabel={activeCountry ? (t["country" + activeCountry.id.toUpperCase()] || activeCountry.label) : ""} onBack={() => setView("country")} onToggleLang={toggleLang} lang={lang} />
 
         {/* Folder title */}
@@ -1842,7 +1860,7 @@ export default function App() {
       {fireworks && <FireworksCanvas />}
       {showMap && <MapPicker onSelect={addr => { setForm(p => ({ ...p, location: addr })); setShowMap(false); }} onClose={() => setShowMap(false)} t={t} />}
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
         <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)", borderRadius: 12, padding: 28 }}>
@@ -2040,7 +2058,7 @@ export default function App() {
       <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
         fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
         <Bg /><Lightbox />
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "16px 10px" : "28px 16px" }}>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
           <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
           <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)",
