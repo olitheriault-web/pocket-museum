@@ -1561,7 +1561,7 @@ export default function App() {
   // HOME — stats globales
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "home") return (
-    <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       {showSplash && <SplashScreen onDone={() => setShowSplash(false)} />}
       {fbError && (
@@ -1584,7 +1584,7 @@ export default function App() {
       }} />}
       {showMap && <MapPicker onSelect={addr => { setForm(p => ({ ...p, location: addr })); setShowMap(false); }} onClose={() => setShowMap(false)} t={t} />}
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
         <Header onMap={() => setShowMapAll(true)} onToggleLang={toggleLang} lang={lang} />
 
         {/* Stats */}
@@ -1672,10 +1672,10 @@ export default function App() {
   // COUNTRY — dossiers par valeur pour un pays
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "country" && activeCountry) return (
-    <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
         <Header backLabel={t.home} onBack={() => setView("home")} onToggleLang={toggleLang} lang={lang} />
 
         {/* Country banner */}
@@ -1754,10 +1754,10 @@ export default function App() {
   // FOLDER — liste des pièces
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "folder" && activeFolder) return (
-    <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg /><Lightbox />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
         <Header backLabel={activeCountry ? (t["country" + activeCountry.id.toUpperCase()] || activeCountry.label) : ""} onBack={() => setView("country")} onToggleLang={toggleLang} lang={lang} />
 
         {/* Folder title */}
@@ -1855,15 +1855,15 @@ export default function App() {
   // ADD
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "add") return (
-    <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       {fireworks && <FireworksCanvas />}
       {showMap && <MapPicker onSelect={addr => { setForm(p => ({ ...p, location: addr })); setShowMap(false); }} onClose={() => setShowMap(false)} t={t} />}
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
         <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)", borderRadius: 12, padding: 28 }}>
+        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)", borderRadius: 12, padding: isMobile ? "16px 12px" : 28 }}>
           <div style={{ marginBottom: 24 }}>
             <h2 style={{ margin: "0 0 4px", fontWeight: 400, fontSize: 20, color: "#E8D98A" }}>
               {form.id ? t.editFiche : t.newPiece}
@@ -1887,13 +1887,13 @@ export default function App() {
             {/* Country selector */}
             <div style={{ gridColumn: "1/-1" }}>
               <label style={labelStyle}>{lang === "en" ? "Country" : "Pays"}</label>
-              <div style={{ display: "flex", gap: 10 }}>
+              <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
                 {COUNTRIES.map(c => (
                   <button key={c.id} onClick={() => setForm(p => ({ ...p, country: c.id }))}
                     style={{ flex: 1, background: form.country === c.id ? `${c.color}22` : "rgba(255,255,255,0.04)",
                       border: `1px solid ${form.country === c.id ? c.color : "rgba(139,125,90,0.25)"}`,
-                      borderRadius: 8, padding: "10px 14px", cursor: "pointer", fontFamily: "inherit",
-                      display: "flex", alignItems: "center", gap: 10, transition: "all 0.15s" }}>
+                      borderRadius: 8, padding: "10px 10px", cursor: "pointer", fontFamily: "inherit",
+                      display: "flex", alignItems: "center", gap: 8, transition: "all 0.15s", flexShrink: 0 }}>
                     <div style={{ borderRadius: 4, overflow: "hidden", lineHeight: 0, flexShrink: 0,
                       boxShadow: `0 0 0 1px ${c.color}44` }}>
                       {c.flag(36)}
@@ -2055,10 +2055,10 @@ export default function App() {
     const findCountry = COUNTRIES.find(c => c.id === selectedFind.country);
     const findFolder = [...FOLDERS_COINS, ...FOLDERS_BIJOUX].find(f => f.id === selectedFind.folder);
     return (
-      <div style={{ minHeight: "100vh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden",
+      <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
         fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
         <Bg /><Lightbox />
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 10px 16px 10px" : "28px 16px" }}>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
           <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
           <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)",
@@ -2217,8 +2217,8 @@ const labelStyle = {
 const inputStyle = {
   width: "100%", background: "rgba(255,255,255,0.05)",
   border: "1px solid rgba(139,125,90,0.25)", borderRadius: 6,
-  color: "#E8E4D9", padding: "12px 14px", minHeight: 44, fontSize: 16,
-  fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box",
+  color: "#E8E4D9", padding: "12px 10px", minHeight: 44, fontSize: 16,
+  fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", maxWidth: "100%",
 };
 
 const selectStyle = {
