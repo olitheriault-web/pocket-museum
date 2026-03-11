@@ -385,6 +385,11 @@ function PhotoUploader({ value, onChange, label = "Photo" }) {
 function Bg() {
   return (
     <>
+      <style>{`
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body, #root { max-width: 100vw; overflow-x: hidden; }
+        input, select, textarea, button { max-width: 100%; }
+      `}</style>
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
         background: "radial-gradient(ellipse at 20% 10%, #1A1408 0%, transparent 60%), radial-gradient(ellipse at 80% 90%, #080D1A 0%, transparent 60%)" }} />
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
@@ -940,10 +945,11 @@ function SplashScreen({ onDone }) {
   const [phase, setPhase] = React.useState(0);
   const lastTap = React.useRef(null);
 
-  const handleTap = () => {
+  const handleTap = (e) => {
+    e.preventDefault();
     const now = Date.now();
     if (lastTap.current && now - lastTap.current < 350) {
-      onDone(); // double tap — skip !
+      onDone();
     }
     lastTap.current = now;
   };
@@ -962,7 +968,7 @@ function SplashScreen({ onDone }) {
   const R  = size / 2 - 8;
 
   return (
-    <div onClick={handleTap} onTouchEnd={handleTap} style={{
+    <div onTouchStart={handleTap} onClick={handleTap} style={{
       position:"fixed", inset:0, zIndex:9999,
       background:"#06060A",
       display:"flex", flexDirection:"column",
@@ -1571,7 +1577,7 @@ export default function App() {
   // HOME — stats globales
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "home") return (
-    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       {showSplash && <SplashScreen onDone={() => setShowSplash(false)} />}
       {fbError && (
@@ -1682,7 +1688,7 @@ export default function App() {
   // COUNTRY — dossiers par valeur pour un pays
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "country" && activeCountry) return (
-    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg />
       <div style={{ position: "relative", zIndex: 1, maxWidth: 860, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
@@ -1764,7 +1770,7 @@ export default function App() {
   // FOLDER — liste des pièces
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "folder" && activeFolder) return (
-    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg /><Lightbox />
       <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
@@ -1865,7 +1871,7 @@ export default function App() {
   // ADD
   // ══════════════════════════════════════════════════════════════════════════
   if (view === "add") return (
-    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
+    <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       {fireworks && <FireworksCanvas />}
       {showMap && <MapPicker onSelect={addr => { setForm(p => ({ ...p, location: addr })); setShowMap(false); }} onClose={() => setShowMap(false)} t={t} />}
@@ -1873,7 +1879,7 @@ export default function App() {
       <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
         <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
-        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)", borderRadius: 12, padding: isMobile ? "16px 12px" : 28 }}>
+        <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)", borderRadius: 12, padding: isMobile ? "14px 10px" : 28, boxSizing: "border-box", width: "100%" }}>
           <div style={{ marginBottom: 24 }}>
             <h2 style={{ margin: "0 0 4px", fontWeight: 400, fontSize: 20, color: "#E8D98A" }}>
               {form.id ? t.editFiche : t.newPiece}
@@ -1883,12 +1889,12 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, width: "100%", boxSizing: "border-box" }}>
 
             {/* Photos */}
             <div style={{ gridColumn: "1/-1" }}>
               <label style={labelStyle}>Photos (recto / verso)</label>
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 <PhotoUploader value={form.photo} onChange={photo => setForm(p => ({ ...p, photo }))} label="Recto" />
                 <PhotoUploader value={form.photo2} onChange={photo2 => setForm(p => ({ ...p, photo2 }))} label="Verso" />
               </div>
@@ -2065,7 +2071,7 @@ export default function App() {
     const findCountry = COUNTRIES.find(c => c.id === selectedFind.country);
     const findFolder = [...FOLDERS_COINS, ...FOLDERS_BIJOUX].find(f => f.id === selectedFind.folder);
     return (
-      <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "hidden", maxWidth: "100vw",
+      <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
         fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
         <Bg /><Lightbox />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
