@@ -1430,9 +1430,10 @@ export default function App() {
     setView("add");
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     setFinds(prev => prev.filter(f => f.id !== id));
     setView("folder"); setSelectedFind(null);
+    try { await fbDeleteFind(id); } catch (e) { console.error("Delete error:", e); }
   };
 
   // Finds for current country+folder
@@ -1773,7 +1774,7 @@ export default function App() {
     <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
       fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
       <Bg /><Lightbox />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 14px 16px 14px" : "28px 24px", overflowX: "hidden" }}>
         <Header backLabel={activeCountry ? (t["country" + activeCountry.id.toUpperCase()] || activeCountry.label) : ""} onBack={() => setView("country")} onToggleLang={toggleLang} lang={lang} />
 
         {/* Folder title */}
@@ -1876,7 +1877,7 @@ export default function App() {
       {fireworks && <FireworksCanvas />}
       {showMap && <MapPicker onSelect={addr => { setForm(p => ({ ...p, location: addr })); setShowMap(false); }} onClose={() => setShowMap(false)} t={t} />}
       <Bg />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 14px 16px 14px" : "28px 24px", overflowX: "hidden" }}>
         <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)", borderRadius: 12, padding: isMobile ? "14px 10px" : 28, boxSizing: "border-box", width: "100%" }}>
@@ -1889,12 +1890,12 @@ export default function App() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 10, width: "100%", boxSizing: "border-box" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 10, width: "100%", boxSizing: "border-box" }}>
 
             {/* Photos */}
             <div style={{ gridColumn: "1/-1" }}>
               <label style={labelStyle}>Photos (recto / verso)</label>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 8 }}>
                 <PhotoUploader value={form.photo} onChange={photo => setForm(p => ({ ...p, photo }))} label="Recto" />
                 <PhotoUploader value={form.photo2} onChange={photo2 => setForm(p => ({ ...p, photo2 }))} label="Verso" />
               </div>
@@ -1903,13 +1904,13 @@ export default function App() {
             {/* Country selector */}
             <div style={{ gridColumn: "1/-1" }}>
               <label style={labelStyle}>{lang === "en" ? "Country" : "Pays"}</label>
-              <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4, 1fr)", gap: 8 }}>
                 {COUNTRIES.map(c => (
                   <button key={c.id} onClick={() => setForm(p => ({ ...p, country: c.id }))}
-                    style={{ flex: 1, background: form.country === c.id ? `${c.color}22` : "rgba(255,255,255,0.04)",
+                    style={{ background: form.country === c.id ? `${c.color}22` : "rgba(255,255,255,0.04)",
                       border: `1px solid ${form.country === c.id ? c.color : "rgba(139,125,90,0.25)"}`,
-                      borderRadius: 8, padding: "10px 10px", cursor: "pointer", fontFamily: "inherit",
-                      display: "flex", alignItems: "center", gap: 8, transition: "all 0.15s", flexShrink: 0 }}>
+                      borderRadius: 8, padding: "10px 8px", cursor: "pointer", fontFamily: "inherit",
+                      display: "flex", alignItems: "center", justifyContent: "center", gap: 6, transition: "all 0.15s", width: "100%" }}>
                     <div style={{ borderRadius: 4, overflow: "hidden", lineHeight: 0, flexShrink: 0,
                       boxShadow: `0 0 0 1px ${c.color}44` }}>
                       {c.flag(36)}
@@ -1925,14 +1926,15 @@ export default function App() {
             {/* Folder */}
             <div style={{ gridColumn: "1/-1" }}>
               <label style={labelStyle}>{lang === "en" ? "Folder (value)" : "Dossier (valeur)"}</label>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(3, 1fr)" : "repeat(4, 1fr)", gap: 8 }}>
                 {getFolders(form.country).map(f => (
                   <button key={f.id} onClick={() => setForm(p => ({ ...p, folder: f.id }))}
                     style={{ background: form.folder === f.id ? f.color : "rgba(255,255,255,0.04)",
                       border: `1px solid ${form.folder === f.id ? f.color : "rgba(139,125,90,0.25)"}`,
                       borderRadius: 6, color: form.folder === f.id ? "#0D0D0F" : "#8B7D5A",
-                      padding: "6px 14px", fontSize: 13, cursor: "pointer", fontFamily: "inherit",
-                      fontWeight: form.folder === f.id ? 700 : 400, transition: "all 0.15s" }}>
+                      padding: "8px 4px", fontSize: 12, cursor: "pointer", fontFamily: "inherit",
+                      fontWeight: form.folder === f.id ? 700 : 400, transition: "all 0.15s",
+                      textAlign: "center", width: "100%" }}>
                     {t.folders?.[f.id] || f.label}
                   </button>
                 ))}
@@ -2074,7 +2076,7 @@ export default function App() {
       <div style={{ minHeight: "100dvh", background: "#0D0D0F", color: "#E8E4D9", overflowX: "clip", width: "100%", boxSizing: "border-box",
         fontFamily: "'Georgia', 'Times New Roman', serif", position: "relative" }}>
         <Bg /><Lightbox />
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 12px 16px 12px" : "28px 24px" }}>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: 800, margin: "0 auto", width: "100%", boxSizing: "border-box", padding: isMobile ? "env(safe-area-inset-top, 16px) 14px 16px 14px" : "28px 24px", overflowX: "hidden" }}>
           <Header backLabel={activeFolder ? (t.folders?.[activeFolder.id] || activeFolder.label) : ""} onBack={() => setView("folder")} onToggleLang={toggleLang} lang={lang} />
 
           <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,125,90,0.2)",
@@ -2231,10 +2233,10 @@ const labelStyle = {
 };
 
 const inputStyle = {
-  width: "100%", background: "rgba(255,255,255,0.05)",
+  width: "100%", maxWidth: "100%", background: "rgba(255,255,255,0.05)",
   border: "1px solid rgba(139,125,90,0.25)", borderRadius: 6,
   color: "#E8E4D9", padding: "12px 10px", minHeight: 44, fontSize: 16,
-  fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", maxWidth: "100%",
+  fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", display: "block",
 };
 
 const selectStyle = {
